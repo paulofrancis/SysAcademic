@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html ng-app="AngularJS">
+
+<head>
+
+<title>Sistema Acadêmico</title>
+<base href="/AngularJS/" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
+<link rel="stylesheet" href="aplicacao/css/estilo.css" />
+
+<script src="angular/js/angular.min.js"> </script>
+<script src="angular/js/angular-resource.min.js"></script>
+<script src="angular/js/ui-bootstrap-tpls-0.13.1.min.js"> </script>
+<script src="angular/js/angular-route.min.js"> </script>
+<script src="bootstrap/js/jquery-1.11.3.min.js"> </script>
+<script src="bootstrap/js/bootstrap.min.js"> </script>
+
+<script src="aplicacao/js/utils/app.js"> </script>
+<script src="aplicacao/js/utils/mensagemFactory.js"> </script>
+<script src="aplicacao/js/services/DisciplinaService.js"> </script>
+<script src="aplicacao/js/services/NotaService.js"> </script>
+<script src="aplicacao/js/services/CursoService.js"> </script>
+<script src="aplicacao/js/controllers/loginController.js"> </script>
+<script src="aplicacao/js/controllers/conultarNotasAlunoController.js"> </script>
+
+</head>
+<body ng-controller="conultarNotasAlunoController">
+
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+					data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+					<span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">Área do Aluno</a>
+			</div>
+
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav navbar-right">
+					<li><a ng-click="logout()">Logout</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+
+	<div class="container">
+        <div class="row">
+            <div class="col-xs-12">    
+                <div class="page-header">
+                    <h1>Consultar Notas</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">    
+              	<div ng-show="mensagemAlerta.severidade" ng-bind="mensagemAlerta.texto" class="alert alert-{{mensagemAlerta.severidade}}"></div>
+        	</div>
+        </div>
+    </div>
+
+
+	<div class="container">
+		<div class="jumbotron">
+			<form class="form-horizontal">
+			
+				<div class="form-group" ng-show="notaFiltro.tipoUsuario == 'Administrador'">
+	                <label for="matricula" class="col-xs-12 col-sm-offset-1 col-sm-2 col-md-offset-1 col-md-2 control-label">Matrícula do Aluno:</label>
+	                <div class="col-xs-12 col-sm-8 col-md-6">
+	                    <input class="form-control" id="matricula" ng-model="notaFiltro.matricula" />
+	                </div>
+	            </div>
+			
+				<div class="form-group">
+	                <label for="curso" class="col-xs-12 col-sm-offset-1 col-sm-2 col-md-offset-1 col-md-2 control-label">Curso:</label>
+	                <div class="col-xs-12 col-sm-8 col-md-6">
+	                    <select id="curso" class="form-control" ng-model="notaFiltro.siglaCurso"  ng-change="pesquisarDisciplinas()" >
+							<option></option>
+							<option value="{{curso.sigla}}" ng-repeat="curso in cursos" >{{curso.nome}}</option>
+						</select>
+	                </div>
+	            </div>
+	            
+				<div class="form-group">
+					<label for="disciplina" class="col-xs-12 col-sm-offset-1 col-sm-2 col-md-offset-1 col-md-2 control-label">Disciplina:</label>
+					<div class="col-xs-12 col-sm-8 col-md-6">
+						<select id="disciplina" class="form-control" ng-model="notaFiltro.siglaDisciplina" >
+							<option></option>
+							<option value="{{disciplina.sigla}}" ng-repeat="disciplina in disciplinas" >{{disciplina.nome}}</option>
+						</select>
+					</div>
+				</div>
+				
+				<div class="form-group">
+	                <label for="perInicial" class="col-xs-12 col-sm-offset-1 col-sm-2 col-md-offset-1 col-md-2 control-label">Período:</label>
+	                <div class="col-xs-6 col-sm-4 col-md-3">
+	                    <input type="date" class="form-control" id="perInicial" ng-model="notaFiltro.dataInicial" />
+	                </div>
+	                <div class="col-xs-6 col-sm-4 col-md-3">
+	                    <input type="date" class="form-control" id="perFinal" ng-model="notaFiltro.dataFinal"/>
+	                </div>
+	            </div>
+	
+	            
+	            <div class="form-group">
+	                <div class="col-xs-12 col-sm-offset-7 col-sm-4 col-md-offset-6 col-md-3">
+	                    <button type="submit" class="btn btn-primary btn-block" ng-click="consultarNotas()" >Consultar</button>
+	                </div>
+	            </div>
+	
+			</form>
+		</div>
+	</div>
+
+
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12">
+
+				<div class="panel panel-default">
+					<div class="table-responsive">
+						<table class="table table-striped">
+							<thead>
+								<tr class="active">
+									<th class="visible-sm-block visible-md-block visible-lg-block">Sigla</th>
+									<th>Disciplina</th>
+									<th>Data de Postagem</th>
+									<th>Nota</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="nota in notas">
+									<td ng-bind="nota.disciplina.sigla"></td>
+									<td ng-bind="nota.disciplina.nome" class="visible-sm-block visible-md-block visible-lg-block"></td>
+									<td ng-bind="nota.dataPostagem | date:'dd/MM/yyyy'"></td>
+									<td ng-bind="nota.valor"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

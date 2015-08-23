@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="academicContext-Web.config Connection String" description="academicContext Connection String used in web.config by the application to access the database." defaultValue="Data Source=FRANCIS_DEVELOP;Initial Catalog=academic;Persist Security Info=True;User ID=paulo;Password=paulo;MultipleActiveResultSets=True" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="F:\\asw_trabalho_final\\AcademicAPI\\AcademicAPI\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='academicContext']/@connectionString" />
+  </parameter>
+  <parameter name="DefaultConnection-Web.config Connection String" description="DefaultConnection Connection String used in web.config by the application to access the database." defaultValue="Data Source=(LocalDb)\v11.0;Initial Catalog=aspnet-AcademicAPI-20150817145147;Integrated Security=SSPI;AttachDBFilename=|DataDirectory|\aspnet-AcademicAPI-20150817145147.mdf" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="F:\\asw_trabalho_final\\AcademicAPI\\AcademicAPI\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='DefaultConnection']/@connectionString" />
+  </parameter>
+</parameters>
